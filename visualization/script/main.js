@@ -21,8 +21,8 @@ function animateSidebar() {
 
 var baseLayer = L.esri.basemapLayer('Topographic')
 map = L.map("map", {
-  zoom: 13,
-  center: [39.98, -83],
+  zoom: 4,
+  center: [39.98, -90],
   layers: [baseLayer],
   zoomControl: false,
   attributionControl: false,
@@ -451,7 +451,7 @@ $("#all-stop-button").click(function () {
 })
 
 window.onload = function (e) {
-  d3.text("data/test_output.asc", function (asc) {
+  d3.text("https://luyuliu.github.io/sharpe/visualization/data/test_output.asc", function (asc) {
     var s = L.ScalarField.fromASCIIGrid(asc);
     var layer = L.canvasLayer.scalarField(s, {
       color: chroma.scale(['730000', 'e60000', 'e69800', 'fed37f', 'fefe00', 'ffffff', 'aaf596', '4ce600', '38a800', '145a00', '002673']).classes([0, 0.02, 0.05, 0.1, 0.2, 0.3, 0.7, 0.8, 0.9, 0.95, 0.98, 1]),
