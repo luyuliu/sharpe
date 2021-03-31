@@ -18,7 +18,7 @@ print("Conversion done.")
 
 csv_points = arcpy.management.MakeFeatureLayer(base_location + "\\csv_points_raw.shp", "csv_points")
 
-arcpy.PointToRaster_conversion(csv_points, "SM", base_location + "\\raster", cell_assignment="MEAN", cellsize=0.009)
+arcpy.PointToRaster_conversion(csv_points, "SM", base_location + "\\raster", cell_assignment="MEAN", cellsize=0.009*3)
 
 print("Rasterization done.")
 
