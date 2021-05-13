@@ -59,7 +59,7 @@ function addLayer(resolution) {
   try {
     map.removeLayer(layer);
   } catch (error) {
-    console.error("Start.");
+    console.error("StartASDFASDFASDF.");
   }
 
   d3.text(full_url, function (asc) {
