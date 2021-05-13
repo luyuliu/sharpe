@@ -26,7 +26,8 @@ map = L.map("map", {
   layers: [baseLayer],
   zoomControl: false,
   attributionControl: false,
-  maxZoom: 18
+  maxZoom: 18,
+  preferCanvas: true
 });
 
 var layer = null;
