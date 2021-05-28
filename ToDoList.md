@@ -5,3 +5,4 @@
 4. Tuning should help avoid overfitting, allow for adjustments to the number of trees, depth of trees, which features are used to split nodes, how many samples are created when a node is split, and bootstrapping methods
 5. Test to see if there is a difference based on the regional subsets
 6. Compare with RK
+7. Test how antecedent soil moisture works
