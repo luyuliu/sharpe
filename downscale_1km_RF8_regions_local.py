@@ -7,6 +7,7 @@ import csv
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+import pandas as pd
 regions=['Central','EastNorthCentral','Northeast','Northwest',
          'South','Southeast','Southwest','West','WestNorthCentral']
 feature_list=['Elevation','Sand','Precip','NDVI','Temp']  
@@ -50,7 +51,11 @@ for q in range(182,183):
     s_filename9='SMAP_L4_SM_aup_'+d[q][0]+'T150000_9km_clipped.csv'
     n_filename1='NDVI_'+d[q][0]+'nn_1km.csv'
     n_filename9='NDVI_'+d[q][0]+'nn_9km_clipped.csv'
+    idata=d[q][0]+'.csv'
 
+    #In situ data
+    insitu_data=pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/insitu_2016_5cm/'+idata)
+    
     #1 km PRISM precip
     km_1_grid2=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_API_1km/'+p_filename1)
     p_g2=csv.reader(km_1_grid2,delimiter=',',quotechar='|')
@@ -105,7 +110,7 @@ for q in range(182,183):
     p_g8=csv.reader(km_9_grid4,delimiter=',',quotechar='|')
     grid2_ndvi=list(p_g8)#93906 grid cells
     km_9_grid4.close()
-    del(p_filename1, pt_filename1, p_filename9, pt_filename9, s_filename9, n_filename1, n_filename9)
+    #del(p_filename1, pt_filename1, p_filename9, pt_filename9, s_filename9, n_filename1, n_filename9, idata)
 
     #Organize 1km data (Check the lat/lon order on these files)
     xg,yg,eg,sandg,pg,pgt,ng=([]for h in range(7))#define the data
@@ -162,7 +167,11 @@ for q in range(182,183):
         for b in range(0,len(master)):
             if int(master[b])-1==i:
                 rows9.append((int(masteri[b])))#subtract 1 for zero indexing
-                
+        
+        region_9km = pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/Subregions/'+regions[i]+'_9km.csv')    
+        smap_9km = pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/SMAP/SMAP_extracted_clipped/'+s_filename9)          
+        smap_9km['pointid'] = smap_9km.index+1
+        smap_sub9 = smap_9km.loc[smap_9km['pointid'].isin(list(region_9km['pointid']._values))]
         region1=km_1[:,np.array(rows1)]
         region9=km_9[:,np.array(rows9)]
         regionsmap9=smap[:,np.array(rows9)]
