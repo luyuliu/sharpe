@@ -16,33 +16,33 @@ def closest_node(node, nodes):
 
 regions=['Central','EastNorthCentral','Northeast','Northwest',
          'South','Southeast','Southwest','West','WestNorthCentral']
-feature_list=['Elevation','Sand','Precip','NDVI','Temp']  
+feature_list=['Elevation','Sand','Precip','NDVI','Temp']
 #import date list
-dates=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/datelist.csv')
+dates=open('/fs/ess/scratch/PAS1961/sharpe/PRISM/datelist.csv')
 d_l=csv.reader(dates,delimiter=',',quotechar='|')
 d=list(d_l)#366 days
 dates.close()
-    
+
 #1 km elevation
-km_1_grid=open('D:/OneDrive - The Ohio State University/Sharpe/DEM/DEM.csv')
+km_1_grid=open('/fs/ess/scratch/PAS1961/sharpe/DEM/DEM.csv')
 p_g=csv.reader(km_1_grid,delimiter=',',quotechar='|')
 grid_dem=list(p_g)#7763333 grid cells
 km_1_grid.close()
 
 #1 km gSSURGO
-km_1_grid3=open('D:/OneDrive - The Ohio State University/Sharpe/gSSURGO/soil_texture_d5.csv')
+km_1_grid3=open('/fs/ess/scratch/PAS1961/sharpe/gSSURGO/soil_texture_d5.csv')
 p_g3=csv.reader(km_1_grid3,delimiter=',',quotechar='|')
 grid_gssurgo=list(p_g3)#7763333 grid cells
 km_1_grid3.close()
 
 #9 km elevation
-km_9_grid=open('D:/OneDrive - The Ohio State University/Sharpe/DEM/DEM_9km_clipped.csv')
+km_9_grid=open('/fs/ess/scratch/PAS1961/sharpe/DEM/DEM_9km_clipped.csv')
 p_g4=csv.reader(km_9_grid,delimiter=',',quotechar='|')
 grid2_dem=list(p_g4)#93906 grid cells
 km_9_grid.close()
 
 #9 km gSSURGO
-km_9_grid3=open('D:/OneDrive - The Ohio State University/Sharpe/gSSURGO/gSSURGO_d5_9km_clipped.csv')
+km_9_grid3=open('/fs/ess/scratch/PAS1961/sharpe/gSSURGO/gSSURGO_d5_9km_clipped.csv')
 p_g6=csv.reader(km_9_grid3,delimiter=',',quotechar='|')
 grid2_gssurgo=list(p_g6)#93906 grid cells
 km_9_grid3.close()
@@ -59,36 +59,36 @@ for q in range(182,183):
     n_filename1='NDVI_'+d[q][0]+'nn_1km.csv'
     n_filename9='NDVI_'+d[q][0]+'nn_9km_clipped.csv'
     idata=d[q][0]+'.csv'
-
-    #In situ data
-    insitu_data=pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/insitu_2016_5cm/'+idata)
     
+    #In situ data
+    insitu_data=pd.read_csv('/fs/ess/scratch/PAS1961/sharpe/insitu_2016_5cm/'+idata)
+
     #1 km PRISM precip
-    km_1_grid2=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_API_1km/'+p_filename1)
+    km_1_grid2=open('/fs/ess/scratch/PAS1961/sharpe/PRISM/PRISM_1km/'+p_filename1)
     p_g2=csv.reader(km_1_grid2,delimiter=',',quotechar='|')
     grid_prism=list(p_g2)#7763333 grid cells
     km_1_grid2.close()
         
-#     #1 km PRISM API
-#     km_1_grid2=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_1km/'+p_filename1)
-#     p_g2=csv.reader(km_1_grid2,delimiter=',',quotechar='|')
-#     grid_prism=list(p_g2)#7763333 grid cells
-#     km_1_grid2.close()
+#    #1 km PRISM API
+#    km_1_grid2=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_1km/'+p_filename1)
+#    p_g2=csv.reader(km_1_grid2,delimiter=',',quotechar='|')
+#    grid_prism=list(p_g2)#7763333 grid cells
+#    km_1_grid2.close()
     
     #1 km PRISM temp
-    km_1_grid5=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_1km_T/'+pt_filename1)
+    km_1_grid5=open('/fs/ess/scratch/PAS1961/sharpe/PRISM/PRISM_1km_T/'+pt_filename1)
     p_g9=csv.reader(km_1_grid5,delimiter=',',quotechar='|')
     grid_prismt=list(p_g9)#7763333 grid cells
     km_1_grid5.close()
     
     #1 km NDVI
-    km_1_grid4=open('D:/OneDrive - The Ohio State University/Sharpe/AVHRR_NDVI_9km/NDVI_1km/'+n_filename1)
+    km_1_grid4=open('/fs/ess/scratch/PAS1961/sharpe/AVHRR_NDVI_9km/NDVI_1km/'+n_filename1)
     p_g7=csv.reader(km_1_grid4,delimiter=',',quotechar='|')
     grid_ndvi=list(p_g7)#7763333 grid cells
     km_1_grid4.close()
     
     #9 km PRISM precip
-    km_9_grid2=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_9km_clipped/'+p_filename9)
+    km_9_grid2=open('/fs/ess/scratch/PAS1961/sharpe/PRISM/PRISM_9km_clipped/'+p_filename9)
     p_g5=csv.reader(km_9_grid2,delimiter=',',quotechar='|')
     grid2_prism=list(p_g5)#93906 grid cells
     km_9_grid2.close()
@@ -100,24 +100,25 @@ for q in range(182,183):
 #    km_9_grid2.close()
     
     #9 km PRISM temp
-    km_9_grid5=open('D:/OneDrive - The Ohio State University/Sharpe/PRISM/PRISM_T_9km_clipped/'+pt_filename9)
+    km_9_grid5=open('/fs/ess/scratch/PAS1961/sharpe/PRISM/PRISM_T_9km_clipped/'+pt_filename9)
     p_g10=csv.reader(km_9_grid5,delimiter=',',quotechar='|')
     grid2_prismt=list(p_g10)#93906 grid cells
     km_9_grid5.close()
     
     #9 km SMAP
-    smap_grid=open('D:/OneDrive - The Ohio State University/Sharpe/SMAP/SMAP_extracted_clipped/'+s_filename9)
+    smap_grid=open('/fs/ess/scratch/PAS1961/sharpe/SMAP/SMAP_extracted_clipped/'+s_filename9)
     s_g=csv.reader(smap_grid,delimiter=',',quotechar='|')
     sgrid=list(s_g)#93906 grid cells
     smap_grid.close()
     print s_filename9
     
     #9 km NDVI
-    km_9_grid4=open('D:/OneDrive - The Ohio State University/Sharpe/AVHRR_NDVI_9km/NDVI_clipped/'+n_filename9)
+    km_9_grid4=open('/fs/ess/scratch/PAS1961/sharpe/AVHRR_NDVI_9km/NDVI_clipped/'+n_filename9)
     p_g8=csv.reader(km_9_grid4,delimiter=',',quotechar='|')
     grid2_ndvi=list(p_g8)#93906 grid cells
     km_9_grid4.close()
-    #del(p_filename1, pt_filename1, p_filename9, pt_filename9, s_filename9, n_filename1, n_filename9, idata)
+    #del(p_filename1, pt_filename1, p_filename9, pt_filename9, s_filename9, n_filename1, n_filename9,idata)
+    
     #Organize 1km data (Check the lat/lon order on these files)
     xg,yg,eg,sandg,pg,pgt,ng=([]for h in range(7))#define the data
     for g in range(1,len(grid_dem)):
@@ -130,7 +131,7 @@ for q in range(182,183):
         pg.append(float(grid_prism[g][2])) #pcp (mm)
         pgt.append(float(grid_prismt[g][2])) #tmean (C)
         ng.append(float(grid_ndvi[g][2])) #ndvi (-0.1 to 1)
-    del(grid_prism,grid_prismt,grid_ndvi,grid_dem,grid_gssurgo,g)
+    #del(grid_prism,grid_prismt,grid_ndvi,grid_gssurgo,g)#grid_dem
     xg2,yg2,sg2,eg2,sand2g,pg2,pgt2,ng2,master,masteri=([]for h in range(10))#define the data
     count=0
     for k in range(1,len(sgrid)):#This loop removes the missing data from smap grid cells
@@ -149,7 +150,7 @@ for q in range(182,183):
             ng2.append(float(grid2_ndvi[k][2])) #ndvi (-0.1 to 1)
             count=count+1
                 
-    del(sgrid,grid2_dem,grid2_gssurgo,grid2_prism,grid2_prismt,grid2_ndvi,k)
+    #del(sgrid,grid2_dem,grid2_gssurgo,grid2_prism,grid2_prismt,grid2_ndvi,k)
     smap=np.array([xg2,yg2,sg2])#SMAP lon,lat, and SM 3x93812
     km_1=np.array([eg,sandg,pg,pgt,ng])# (5x7763332)
     km_9=np.array([eg2,sand2g,pg2,pgt2,ng2])# (5x93812)
@@ -158,12 +159,12 @@ for q in range(182,183):
     del(xg,yg)
     del(eg,pg,pgt,ng,xg2,yg2,eg2,pg2,pgt2,sg2,ng2)
     del(sandg,sand2g)
-    print 'Data Prep Complete'    
-    for i in range(0,1):#len(regions)):
+    print 'Data Prep Complete'   
+    for i in range(0,len(regions)):
         rows1,rows9=([]for v in range(2))
         s_filename1='SMAP_L4_SM_RF8_'+d[q][0]+regions[i]+'T150000_1km.csv'
 
-        c1=open('D:/OneDrive - The Ohio State University/Sharpe/Subregions/'+regions[i]+'_grids.csv')
+        c1=open('/fs/ess/scratch/PAS1961/sharpe/Subregions/'+regions[i]+'_grids.csv')
         c_1=csv.reader(c1,delimiter=',',quotechar='|')
         cells1=list(c_1)
         c1.close()
@@ -174,10 +175,10 @@ for q in range(182,183):
             if int(master[b])-1==i:
                 rows9.append((int(masteri[b])))#subtract 1 for zero indexing
         
-        region_9km = pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/Subregions/'+regions[i]+'_9km.csv')    
-        smap_9km = pd.read_csv('D:/OneDrive - The Ohio State University/Sharpe/SMAP/SMAP_extracted_clipped/'+s_filename9)          
+        region_9km = pd.read_csv('/fs/ess/scratch/PAS1961/sharpe/Subregions/'+regions[i]+'_9km.csv')    
+        smap_9km = pd.read_csv('/fs/ess/scratch/PAS1961/sharpe/SMAP/SMAP_extracted_clipped/'+s_filename9)
         smap_9km['pointid'] = smap_9km.index+1
-        smap_sub9 = smap_9km.loc[smap_9km['pointid'].isin(list(region_9km['pointid']._values))]
+        smap_sub9 = smap_9km.loc[smap_9km['pointid'].isin(list(region_9km['pointid']._values))]   
         max_lat = np.max(smap_sub9['Latitude'])
         min_lat = np.min(smap_sub9['Latitude'])
         max_lon = np.max(smap_sub9['Longitude'])
@@ -196,34 +197,32 @@ for q in range(182,183):
             p_index = closest_node(tar_point,(np.matrix(regionsmap9[0:2,:]).H))
             print p_index
             
-        #lat lon coordinates need to be numpy matrix of float values (n grid cells x 2)
-        #ans=np.matrix(regionsmap9[0:2,:])
-        #ans=ans.H
         #Split data into training and test sets
         #Train by building a relationship from original 9km grid
         #Instantiate model with 1000 decision trees
-#        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)#random_state is a seed for reproducibility
-#        rf.fit(region9.transpose(),regionsmap9[2])
-#        importances = list(rf.feature_importances_)# List of tuples with variable and importance
-#        annual_importances.append([importances])
-#        predictions=rf.predict(region1.transpose())
-#        print 'RF Downscaling Complete'
-##        #Independent (X) data should be reshaped right now because they only contain one feature (column)
-##        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-#        #km_1=np.transpose(km_1)#match predictions
-#        p2=np.transpose(np.array([predictions]))
-#        coor=np.transpose(np.array([regionxg,regionyg]))
-#        output=np.concatenate((coor,p2),axis=1)
-#        np.savetxt(s_filename1,output,fmt='%1.3f',delimiter=",",
-#               header='Lon,Lat,SM',comments='')
-#    
-#        with open(str('dailyimportancesRF8'+regions[i]+'.csv'), "wb") as f:
-#            writer = csv.writer(f)
-#            writer.writerows(annual_importances)
-#            
-#        del(v,b,region1,region9,regionsmap9,regionxg,regionyg,predictions,p2,coor,output)
-
-#View decision trees, takes too long (> 4 hours)
+        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)#random_state is a seed for reproducibility
+        rf.fit(region9.transpose(),regionsmap9[2])
+        importances = list(rf.feature_importances_)# List of tuples with variable and importance
+        annual_importances.append([importances])
+        predictions=rf.predict(region1.transpose())
+        print 'RF Downscaling Complete'
+#        #Independent (X) data should be reshaped right now because they only contain one feature (column)
+#        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
+        #km_1=np.transpose(km_1)#match predictions
+        p2=np.transpose(np.array([predictions]))
+        coor=np.transpose(np.array([regionxg,regionyg]))
+        output=np.concatenate((coor,p2),axis=1)
+        np.savetxt('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/'+s_filename1,output,fmt='%1.3f',delimiter=",",
+               header='Lon,Lat,SM',comments='')
+    
+        with open(str('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/dailyimportancesRF8'+regions[i]+'.csv'), "wb") as f:
+            writer = csv.writer(f)
+            writer.writerows(annual_importances)
+            
+        del(v,b,region1,region9,regionsmap9,regionxg,regionyg,predictions,p2,coor,output)
+        
+print datetime.datetime.now()-startTime
+##View decision trees, takes too long (> 4 hours)
 #from sklearn.tree import export_graphviz
 #import pydot
 #feature_list=['Elevation','Clay','Sand','Silt','Precip','NDVI']
