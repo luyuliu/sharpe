@@ -194,32 +194,43 @@ for q in range(182,183):
         aux = []
         for p in range(len(insitu_subset)):
             tar_point =(insitu_subset['lat'].iloc[p],insitu_subset['lon'].iloc[p])
-            p_index = closest_node(tar_point,(np.matrix(regionsmap9[0:2,:]).H))
-            print p_index
+#            a=(np.matrix(regionsmap9[0:2,:]).H)#9km
+#            a[:,[0,1]]=a[:,[1,0]]#switch lat and lon columns
+            b=np.array([regionyg,regionxg])#1km
+            b=np.matrix(b).H
+            p_index = closest_node(tar_point,b)
+            #print p_index,tar_point
+            pos.append(b[p_index])
+            aux.append(region1[:,p_index])
             
-        #Split data into training and test sets
+        print len(aux)  
+        #Build RK model and train against insitu data
         #Train by building a relationship from original 9km grid
         #Instantiate model with 1000 decision trees
         rf = RandomForestRegressor(n_estimators = 100, random_state = 42)#random_state is a seed for reproducibility
         rf.fit(region9.transpose(),regionsmap9[2])
         importances = list(rf.feature_importances_)# List of tuples with variable and importance
         annual_importances.append([importances])
-        predictions=rf.predict(region1.transpose())
+        predictions=rf.predict(aux)
         print 'RF Downscaling Complete'
-#        #Independent (X) data should be reshaped right now because they only contain one feature (column)
-#        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-        #km_1=np.transpose(km_1)#match predictions
-        p2=np.transpose(np.array([predictions]))
-        coor=np.transpose(np.array([regionxg,regionyg]))
-        output=np.concatenate((coor,p2),axis=1)
-        np.savetxt('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/'+s_filename1,output,fmt='%1.3f',delimiter=",",
-               header='Lon,Lat,SM',comments='')
-    
-        with open(str('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/dailyimportancesRF8'+regions[i]+'.csv'), "wb") as f:
-            writer = csv.writer(f)
-            writer.writerows(annual_importances)
-            
-        del(v,b,region1,region9,regionsmap9,regionxg,regionyg,predictions,p2,coor,output)
+        baseline=np.array(insitu_subset['vwc_5cm'])
+        errors=abs(baseline-predictions)
+        errors=baseline-predictions
+        print('Mean Absolute Error:', round(np.mean(errors), 2))
+        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
+        #https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
+#        #km_1=np.transpose(km_1)#match predictions
+#        p2=np.transpose(np.array([predictions]))
+#        coor=np.transpose(np.array([regionxg,regionyg]))
+#        output=np.concatenate((coor,p2),axis=1)
+#        np.savetxt('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/'+s_filename1,output,fmt='%1.3f',delimiter=",",
+#               header='Lon,Lat,SM',comments='')
+#    
+#        with open(str('/fs/ess/scratch/PAS1961/sharpe/Downscale_Regions/Result/dailyimportancesRF8'+regions[i]+'.csv'), "wb") as f:
+#            writer = csv.writer(f)
+#            writer.writerows(annual_importances)
+#            
+#        del(v,b,region1,region9,regionsmap9,regionxg,regionyg,predictions,p2,coor,output)
         
 print datetime.datetime.now()-startTime
 ##View decision trees, takes too long (> 4 hours)

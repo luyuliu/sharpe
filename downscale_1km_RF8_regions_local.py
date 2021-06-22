@@ -118,6 +118,7 @@ for q in range(182,183):
     grid2_ndvi=list(p_g8)#93906 grid cells
     km_9_grid4.close()
     #del(p_filename1, pt_filename1, p_filename9, pt_filename9, s_filename9, n_filename1, n_filename9, idata)
+    
     #Organize 1km data (Check the lat/lon order on these files)
     xg,yg,eg,sandg,pg,pgt,ng=([]for h in range(7))#define the data
     for g in range(1,len(grid_dem)):
@@ -159,7 +160,7 @@ for q in range(182,183):
     del(eg,pg,pgt,ng,xg2,yg2,eg2,pg2,pgt2,sg2,ng2)
     del(sandg,sand2g)
     print 'Data Prep Complete'    
-    for i in range(0,1):#len(regions)):
+    for i in range(0,len(regions)):
         rows1,rows9=([]for v in range(2))
         s_filename1='SMAP_L4_SM_RF8_'+d[q][0]+regions[i]+'T150000_1km.csv'
 
@@ -193,23 +194,31 @@ for q in range(182,183):
         aux = []
         for p in range(len(insitu_subset)):
             tar_point =(insitu_subset['lat'].iloc[p],insitu_subset['lon'].iloc[p])
-            p_index = closest_node(tar_point,(np.matrix(regionsmap9[0:2,:]).H))
-            print p_index
+#            a=(np.matrix(regionsmap9[0:2,:]).H)#9km
+#            a[:,[0,1]]=a[:,[1,0]]#switch lat and lon columns
+            b=np.array([regionyg,regionxg])#1km
+            b=np.matrix(b).H
+            p_index = closest_node(tar_point,b)
+            #print p_index,tar_point
+            pos.append(b[p_index])
+            aux.append(region1[:,p_index])
             
-        #lat lon coordinates need to be numpy matrix of float values (n grid cells x 2)
-        #ans=np.matrix(regionsmap9[0:2,:])
-        #ans=ans.H
-        #Split data into training and test sets
+        print len(aux)
+        #Build RK model and train against insitu data
         #Train by building a relationship from original 9km grid
         #Instantiate model with 1000 decision trees
-#        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)#random_state is a seed for reproducibility
-#        rf.fit(region9.transpose(),regionsmap9[2])
-#        importances = list(rf.feature_importances_)# List of tuples with variable and importance
-#        annual_importances.append([importances])
-#        predictions=rf.predict(region1.transpose())
-#        print 'RF Downscaling Complete'
-##        #Independent (X) data should be reshaped right now because they only contain one feature (column)
-##        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
+        rf = RandomForestRegressor(n_estimators = 100, random_state = 42)#random_state is a seed for reproducibility
+        rf.fit(region9.transpose(),regionsmap9[2])
+        importances = list(rf.feature_importances_)# List of tuples with variable and importance
+        annual_importances.append([importances])
+        predictions=rf.predict(aux)
+        print 'RF Downscaling Complete'
+        baseline=np.array(insitu_subset['vwc_5cm'])
+        errors=abs(baseline-predictions)
+        errors=baseline-predictions
+        print('Mean Absolute Error:', round(np.mean(errors), 2))
+        #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
+        #https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
 #        #km_1=np.transpose(km_1)#match predictions
 #        p2=np.transpose(np.array([predictions]))
 #        coor=np.transpose(np.array([regionxg,regionyg]))
@@ -223,6 +232,7 @@ for q in range(182,183):
 #            
 #        del(v,b,region1,region9,regionsmap9,regionxg,regionyg,predictions,p2,coor,output)
 
+print datetime.datetime.now()-startTime
 #View decision trees, takes too long (> 4 hours)
 #from sklearn.tree import export_graphviz
 #import pydot
