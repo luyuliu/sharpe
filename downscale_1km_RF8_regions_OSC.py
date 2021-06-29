@@ -10,6 +10,13 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from scipy.spatial import distance
+from math import cos, asin, sqrt
+def dist(lat1, lon1, lat2, lon2):
+    # unit km
+    p = 0.017453292519943295
+    hav = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p)*cos(lat2*p) * (1-cos((lon2-lon1)*p)) / 2
+    return 12742 * asin(sqrt(hav))
+
 def closest_node(node, nodes):
     closest_index = distance.cdist([node], nodes).argmin()
     return closest_index
@@ -192,6 +199,7 @@ for q in range(182,183):
         regionyg=ygr[np.array(rows1)]
         pos = []
         aux = []
+        baseline_temp=[]
         for p in range(len(insitu_subset)):
             tar_point =(insitu_subset['lat'].iloc[p],insitu_subset['lon'].iloc[p])
 #            a=(np.matrix(regionsmap9[0:2,:]).H)#9km
@@ -199,9 +207,13 @@ for q in range(182,183):
             b=np.array([regionyg,regionxg])#1km
             b=np.matrix(b).H
             p_index = closest_node(tar_point,b)
-            #print p_index,tar_point
-            pos.append(b[p_index])
-            aux.append(region1[:,p_index])
+            d_p = dist(tar_point[0],tar_point[1],b[p_index][0,0],b[p_index][0,1])
+            # less than 3 km
+            if d_p < 3:
+                pos.append(b[p_index])
+                aux.append(region1[:,p_index])
+                baseline_temp.append(insitu_subset.iloc[p,6])
+#                print p_index,tar_point
             
         print len(aux)  
         #Build RK model and train against insitu data
@@ -211,15 +223,13 @@ for q in range(182,183):
         rf.fit(region9.transpose(),regionsmap9[2])
         importances = list(rf.feature_importances_)# List of tuples with variable and importance
         annual_importances.append([importances])
-        predictions=rf.predict(aux)
+        predictions=rf.predict(np.array(aux))
         print 'RF Downscaling Complete'
         baseline=np.array(insitu_subset['vwc_5cm'])
         errors=abs(baseline-predictions)
-        errors=baseline-predictions
         print('Mean Absolute Error:', round(np.mean(errors), 2))
         #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
         #https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
-#        #km_1=np.transpose(km_1)#match predictions
 #        p2=np.transpose(np.array([predictions]))
 #        coor=np.transpose(np.array([regionxg,regionyg]))
 #        output=np.concatenate((coor,p2),axis=1)
