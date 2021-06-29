@@ -226,7 +226,7 @@ for q in range(182,183):
         predictions=rf.predict(np.array(aux))
         print 'RF Downscaling Complete'
         baseline=np.array(insitu_subset['vwc_5cm'])
-        errors=abs(baseline-predictions)
+        errors=abs(np.array(baseline_temp)-predictions)
         print('Mean Absolute Error:', round(np.mean(errors), 2))
         #https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
         #https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
